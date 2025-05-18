@@ -4,10 +4,10 @@
   "description": "Backend service untuk A.D.A COMPUTER Service Tracking",
   "main": "index.js",
   "type": "module",
-  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "npm install"
   },
   "dependencies": {
     "cors": "^2.8.5",
