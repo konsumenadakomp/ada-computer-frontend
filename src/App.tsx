@@ -66,7 +66,7 @@ function App() {
                   </ul>
                 </div>
 
-                <div>
+      <div>
                   <h3 className="text-lg font-semibold mb-4">Kontak</h3>
                   <p>Telp: 0321-5281048</p>
                   <p>WA: 085655025603</p>
@@ -75,9 +75,9 @@ function App() {
                   <p>07.00 - 21.00 WIB</p>
                 </div>
               </div>
-            </div>
+      </div>
           </footer>
-        </div>
+      </div>
       </Router>
     </AuthProvider>
   );

@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
 import { createService } from '../services/api';
 
-interface TrackingResult {
-  serviceNumber: string;
-  customerName: string;
-  deviceInfo: string;
-  status: string;
-  lastUpdate: string;
-  notes: string[];
-}
-
 interface ServiceData {
   serviceNumber: string;
   customerName: string;
@@ -62,18 +53,6 @@ const ServiceTrackingForm: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const getStatusColor = (status: string) => {
-    const colors = {
-      menunggu: 'bg-yellow-100 text-yellow-800',
-      diagnosa: 'bg-purple-100 text-purple-800',
-      pengerjaan: 'bg-blue-100 text-blue-800',
-      sparepart: 'bg-orange-100 text-orange-800',
-      batal: 'bg-red-100 text-red-800',
-      selesai: 'bg-green-100 text-green-800'
-    };
-    return colors[status as keyof typeof colors] || '';
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
