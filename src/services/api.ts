@@ -1,5 +1,7 @@
-   const API_URL = `${import.meta.env.VITE_API_URL}/api` || 'http://localhost:5001/api';
-   console.log('API URL:', API_URL);
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+// Debug logging untuk membantu troubleshooting
+console.log('API URL:', API_URL);
 
 export interface ServiceData {
   serviceNumber: string;
@@ -36,19 +38,24 @@ const getAuthHeaders = () => {
   const token = localStorage.getItem('authToken');
   return {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Origin': window.location.origin,
     ...(token ? { Authorization: `Bearer ${token}` } : {})
   };
 };
 
+// Fungsi helper untuk request options
+const getRequestOptions = (method: string = 'GET', body?: any) => ({
+  method,
+  headers: getAuthHeaders(),
+  credentials: 'include' as RequestCredentials,
+  ...(body ? { body: JSON.stringify(body) } : {})
+});
+
 export const createService = async (serviceData: Partial<ServiceData>): Promise<ServiceData> => {
   try {
     console.log('Sending service data:', serviceData);
-    const response = await fetch(`${API_URL}/services`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(serviceData),
-      credentials: 'include'
-    });
+    const response = await fetch(`${API_URL}/services`, getRequestOptions('POST', serviceData));
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -66,10 +73,7 @@ export const createService = async (serviceData: Partial<ServiceData>): Promise<
 
 export const getService = async (serviceNumber: string): Promise<ServiceData> => {
   try {
-    const response = await fetch(`${API_URL}/services/${serviceNumber}`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
+    const response = await fetch(`${API_URL}/services/${serviceNumber}`, getRequestOptions());
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -85,10 +89,7 @@ export const getService = async (serviceNumber: string): Promise<ServiceData> =>
 
 export const getAllServices = async (): Promise<ServiceData[]> => {
   try {
-    const response = await fetch(`${API_URL}/services`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
+    const response = await fetch(`${API_URL}/services`, getRequestOptions());
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -105,12 +106,10 @@ export const getAllServices = async (): Promise<ServiceData[]> => {
 export const updateService = async (serviceNumber: string, updateData: Partial<ServiceData>): Promise<ServiceData> => {
   try {
     console.log('Updating service:', serviceNumber, 'with data:', updateData);
-    const response = await fetch(`${API_URL}/services/${serviceNumber}`, {
-      method: 'PATCH',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(updateData),
-      credentials: 'include'
-    });
+    const response = await fetch(
+      `${API_URL}/services/${serviceNumber}`, 
+      getRequestOptions('PATCH', updateData)
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -127,21 +126,17 @@ export const updateService = async (serviceNumber: string, updateData: Partial<S
 };
 
 export const deleteService = async (serviceNumber: string): Promise<void> => {
-  const response = await fetch(`${API_URL}/services/${serviceNumber}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-    credentials: 'include'
-  });
+  const response = await fetch(
+    `${API_URL}/services/${serviceNumber}`, 
+    getRequestOptions('DELETE')
+  );
   if (!response.ok) {
     throw new Error('Gagal menghapus service');
   }
 };
 
 export const getAllTechnicians = async (): Promise<Technician[]> => {
-  const response = await fetch(`${API_URL}/technicians`, {
-    headers: getAuthHeaders(),
-    credentials: 'include'
-  });
+  const response = await fetch(`${API_URL}/technicians`, getRequestOptions());
   if (!response.ok) {
     throw new Error('Gagal mengambil data teknisi');
   }
@@ -149,12 +144,10 @@ export const getAllTechnicians = async (): Promise<Technician[]> => {
 };
 
 export const createTechnician = async (technicianData: Omit<Technician, '_id'>): Promise<Technician> => {
-  const response = await fetch(`${API_URL}/technicians`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(technicianData),
-    credentials: 'include'
-  });
+  const response = await fetch(
+    `${API_URL}/technicians`, 
+    getRequestOptions('POST', technicianData)
+  );
   if (!response.ok) {
     throw new Error('Gagal menambahkan teknisi');
   }
@@ -162,12 +155,10 @@ export const createTechnician = async (technicianData: Omit<Technician, '_id'>):
 };
 
 export const updateTechnician = async (id: string, updateData: Partial<Technician>): Promise<Technician> => {
-  const response = await fetch(`${API_URL}/technicians/${id}`, {
-    method: 'PATCH',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(updateData),
-    credentials: 'include'
-  });
+  const response = await fetch(
+    `${API_URL}/technicians/${id}`, 
+    getRequestOptions('PATCH', updateData)
+  );
   if (!response.ok) {
     throw new Error('Gagal mengupdate teknisi');
   }
@@ -175,12 +166,11 @@ export const updateTechnician = async (id: string, updateData: Partial<Technicia
 };
 
 export const deleteTechnician = async (id: string): Promise<void> => {
-  const response = await fetch(`${API_URL}/technicians/${id}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-    credentials: 'include'
-  });
+  const response = await fetch(
+    `${API_URL}/technicians/${id}`, 
+    getRequestOptions('DELETE')
+  );
   if (!response.ok) {
     throw new Error('Gagal menghapus teknisi');
   }
-}; 
+};
