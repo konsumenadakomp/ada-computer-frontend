@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const Login: React.FC = () => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -16,15 +16,14 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
+      console.log('Attempting login with API URL:', `${import.meta.env.VITE_API_URL}/api/auth/login`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ username, password }),
-        credentials: 'include',
-        mode: 'cors'
+        body: JSON.stringify({ username, password })
       });
 
       if (!response.ok) {
@@ -114,4 +113,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;
